@@ -35,8 +35,8 @@ fun distance (p1: Vector2D, p0: Vector2D)
 fun distanceDeriv (p1: Vector2D, p0: Vector2D, dp1: Vector2D)
     = ((p1 - p0) * 2.0) dot dp1
 
-//fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
-    //= 2 * ((ddp1 dot (p1 - p0)) + (dp1 dot dp1))
+fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
+    = ((((p1 - p0) * ddp1) + (dp1 * dp1)) * 2.0).norm()
 
 fun distanceDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, pos: Vector2D): Double {
     val h = 1e-4
@@ -59,7 +59,7 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
         splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
 
         val df = distanceDeriv(splinePoint, pos, splineDeriv)
-        val ddf = distanceDeriv2(t, p0, p1, p2, p3, pos)
+        val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
 
         t -= df / ddf
         t = min(max(t, 0.0), 1.0)
@@ -106,38 +106,6 @@ fun closestPointTest (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p
 
     return ddf
 }
-
-// TODO: Change to newton's method
-/*fun gradientDescent (p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, pos: Vector2D): Triple<Double, Vector2D, Vector2D> {
-    val learningRate = 0.01
-    val maxIteration = 1000
-    val tolerance = 1e-6
-
-    var t = 0.5
-
-    var splinePoint = Vector2D(Double.NaN, Double.NaN)
-    var splineDeriv = Vector2D(Double.NaN, Double.NaN)
-
-    for (i in 1..maxIteration) {
-        splinePoint = slerp(t, p0, p1, p2, p3)
-        splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
-
-        if (splinePoint == pos) {break}
-
-        val distanceGradient = splinePoint - pos
-        val gradient = (distanceGradient dot splineDeriv) / distanceGradient.norm()
-
-        val last_t = t
-
-        t -= learningRate * gradient
-
-        t = min(max(t,0.0), 1.0)
-
-        if (abs(t - last_t) < tolerance) {break}
-    }
-
-    return Triple(t, splinePoint, splineDeriv)
-}*/
 
 class Spline(var controlPoints: ArrayList<Vector2D>) {
     private val n: Int = controlPoints.size - 1
