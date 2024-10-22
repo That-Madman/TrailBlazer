@@ -1,3 +1,11 @@
+/*
+Copyright (c) 2024, Fire on the Mountain Robotics
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the
+LICENSE file in the root directory of this source tree.
+*/
+
 package org.fotmrobotics.trailblazer
 
 class PIDF (private var kP: Double, private var kI: Double, private var kD: Double, private var kF: Double) {
