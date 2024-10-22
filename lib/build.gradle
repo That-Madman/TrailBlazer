@@ -15,12 +15,10 @@ plugins {
     id 'java-library'
 }
 
-/*
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
-*/
 
 dependencies {
     // Use the Kotlin JUnit 5 integration.
@@ -36,8 +34,6 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation libs.guava
-
-    implementation 'com.github.FOTMrobotics:TrailBlazer:master-SNAPSHOT'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
