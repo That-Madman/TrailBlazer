@@ -46,6 +46,11 @@ open class Vector2D (var x: Double, var y: Double) {
         }
     }
 
+    fun set (x: Double, y: Double) {
+        this.x = x
+        this.y = y
+    }
+
     operator fun compareTo(v: Vector2D): Int {
         return when {
             this.norm() > v.norm() -> 1
@@ -71,7 +76,7 @@ open class Vector2D (var x: Double, var y: Double) {
     fun angle() = angleWrap(atan2(y, x) * 180 / PI)
 }
 
-class Pose2D(x: Double, y: Double, var h: Double) : Vector2D(x, y) {
+class Pose2D(x: Double, y: Double, var h: Double): Vector2D(x, y) {
     override operator fun get(i: Int): Double {
         return when (i) {
             0 -> x
@@ -88,5 +93,11 @@ class Pose2D(x: Double, y: Double, var h: Double) : Vector2D(x, y) {
             2 -> {h = value}
             else -> error("Index out of range.")
         }
+    }
+
+    fun set (x: Double, y: Double, h: Double) {
+        this.x = x
+        this.y = y
+        this.h = h
     }
 }

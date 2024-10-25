@@ -27,7 +27,7 @@ fun slerpDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector
 
 // Curvature at a given point
 fun curvature (d1: Vector2D, d2: Vector2D)
-    = (d1 x d2) / d1.norm().pow(3)
+    = (d1.x * d2.y - d1.y * d2.x) / d1.norm().pow(3)
 
 fun distance (p1: Vector2D, p0: Vector2D)
     = (p1 - p0).norm().pow(2)
@@ -35,6 +35,7 @@ fun distance (p1: Vector2D, p0: Vector2D)
 fun distanceDeriv (p1: Vector2D, p0: Vector2D, dp1: Vector2D)
     = ((p1 - p0) * 2.0) dot dp1
 
+// Use this
 fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
     = ((((p1 - p0) * ddp1) + (dp1 * dp1)) * 2.0).norm()
 
@@ -45,18 +46,12 @@ fun distanceDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vec
 }
 
 fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, maxIteration: Int = 1000, tolerance: Double = 1e-6): Double {
-    //val maxIteration = 1000
-    //val tolerance = 1e-6
     var t = 0.5
 
-    var splinePoint = Vector2D(Double.NaN, Double.NaN)
-    var splineDeriv = Vector2D(Double.NaN, Double.NaN)
-    var splineDeriv2 = Vector2D(Double.NaN, Double.NaN)
-
     for (i in 1..maxIteration) {
-        splinePoint = slerp(t, p0, p1, p2, p3)
-        splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
-        splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
+        val splinePoint = slerp(t, p0, p1, p2, p3)
+        val splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
+        val splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
 
         val df = distanceDeriv(splinePoint, pos, splineDeriv)
         val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
@@ -69,42 +64,6 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
     }
 
     return t
-}
-
-fun closestPointTest (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D): Double {
-    val maxIteration = 1000
-    val tolerance = 1e-8
-    var t = 0.5
-
-    var splinePoint = Vector2D(Double.NaN, Double.NaN)
-    var splineDeriv = Vector2D(Double.NaN, Double.NaN)
-    var splineDeriv2 = Vector2D(Double.NaN, Double.NaN)
-
-    splinePoint = slerp(t, p0, p1, p2, p3)
-    splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
-    splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
-    val df = distanceDeriv(splinePoint, pos, splineDeriv)
-    //val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
-    val ddf = distanceDeriv2(t, p0, p1, p2, p3, pos)
-    /*
-    for (i in 1..maxIteration) {
-        splinePoint = slerp(t, p0, p1, p2, p3)
-        splineDeriv = slerpDeriv(t, p0, p1, p2, p3)
-        splineDeriv2 = slerpDeriv2(t, p0, p1, p2, p3)
-
-        //if (splinePoint == pos) {break}
-
-        df = distanceDeriv(splinePoint, pos, splineDeriv)
-        val ddf = distanceDeriv2(splinePoint, pos, splineDeriv, splineDeriv2)
-
-        //if (abs(df) < tolerance) {break}
-
-        //t -= df / ddf
-        //t = min(max(t, 0.0), 1.0)
-    }
-     */
-
-    return ddf
 }
 
 class Spline(var controlPoints: ArrayList<Vector2D>) {
@@ -146,11 +105,6 @@ class Spline(var controlPoints: ArrayList<Vector2D>) {
     fun getClosestPoint (pos: Vector2D): Double {
         val segmentPoints = getSegment()
         return closestPoint(pos, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
-    }
-
-    fun getClosestPointTest (pos: Vector2D): Double {
-        val segmentPoints = getSegment()
-        return closestPointTest(pos, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
     fun getPoint (t: Double): Vector2D {
