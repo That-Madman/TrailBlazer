@@ -51,6 +51,12 @@ open class Vector2D (var x: Double, var y: Double) {
         this.y = y
     }
 
+
+    fun set (vector2d: Vector2D) {
+        this.x = vector2d.x
+        this.y = vector2d.y
+    }
+
     operator fun compareTo(v: Vector2D): Int {
         return when {
             this.norm() > v.norm() -> 1
@@ -99,5 +105,11 @@ class Pose2D(x: Double, y: Double, var h: Double): Vector2D(x, y) {
         this.x = x
         this.y = y
         this.h = h
+    }
+
+    fun set (pose2d: Pose2D) {
+        this.x = pose2d.x
+        this.y = pose2d.y
+        this.h = pose2d.h
     }
 }
