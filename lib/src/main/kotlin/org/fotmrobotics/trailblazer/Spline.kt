@@ -67,7 +67,7 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
 }
 
 class Spline(var controlPoints: ArrayList<Vector2D>) {
-    private val n: Int = controlPoints.size - 1
+    private val n: Int = controlPoints.size
     private var segment: Int
 
     init {
@@ -92,13 +92,11 @@ class Spline(var controlPoints: ArrayList<Vector2D>) {
 
     // TODO: Maybe change to operator?
     fun incSegment () {
-        if (segment == n) {segment = 1}
-        else {segment++}
+        if (segment < n) {segment++}
     }
 
     fun decSegment () {
-        if (segment == 1) {segment = n}
-        else {segment--}
+        if (segment > 1) {segment--}
     }
     //
 

@@ -21,10 +21,10 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
 
     val forward = splineDeriv
 
-    val curvature = curvature(splineDeriv, splineDeriv2)
-    val centripetal = forward.pow(2) * curvature
+    //val curvature = curvature(splineDeriv, splineDeriv2)
+    //val centripetal = forward.pow(2) * curvature
 
-    val drive = forward + translation + centripetal
+    val drive = forward + translation// + centripetal
 
     return Pose2D(drive.x, drive.y, 0.0)
 }
