@@ -67,7 +67,7 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
 }
 
 class Spline(var controlPoints: ArrayList<Vector2D>) {
-    private val n: Int = controlPoints.size
+    private var n: Int = controlPoints.size
     private var segment: Int
 
     init {
@@ -80,13 +80,18 @@ class Spline(var controlPoints: ArrayList<Vector2D>) {
         segment = 1
     }
 
+    fun addPoint (i: Int, point: Vector2D) {
+        controlPoints.add(i, point)
+        n++
+    }
+
     fun getSegment (): ArrayList<Vector2D> {
         val points = ArrayList<Vector2D>()
         for (i in 0..3) {points.add(controlPoints[segment-1+i])}
         return points
     }
 
-    fun setSegment (x: Int) {segment = x}
+    fun setSegment (i: Int) {segment = i}
 
     fun numSegments (): Int = n
 

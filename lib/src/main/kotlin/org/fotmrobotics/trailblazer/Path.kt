@@ -21,8 +21,8 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
 
     val forward = splineDeriv
 
-    //val curvature = curvature(splineDeriv, splineDeriv2)
-    //val centripetal = forward.pow(2) * curvature
+    val curvature = curvature(splineDeriv, splineDeriv2)
+    val centripetal = forward.pow(2) * curvature
 
     val drive = forward + translation// + centripetal
 
@@ -30,3 +30,23 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
 }
 
 fun drivePowers () {}
+
+/*class PathSegment () {
+    enum class Heading {
+        FOLLOW, CONSTANT, OFFSET
+    }
+}*/
+
+class Event (type: Type, pt: Vector2D, d: Double) {
+    val grid = Vector2D(pt.x % 12, pt.y % 12)
+
+    enum class Type {
+        ACTION,
+        HEADING,
+        STOP
+    }
+
+    constructor(type: Event.Type, pt: Vector2D, d: Double, value: Any) : this(type, pt, d) {
+
+    }
+}
