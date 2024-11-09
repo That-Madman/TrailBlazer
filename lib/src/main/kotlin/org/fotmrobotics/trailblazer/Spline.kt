@@ -66,6 +66,98 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
     return t
 }
 
+class Spline() {
+    // TODO: If use hermite add new list for tangents. Every point must have a corresponding
+    //  tangent, if not the tangent can be calculated using catmull-rom spline
+    private lateinit var controlPoints: ArrayList<Vector2D>
+    private var segment = 0
+    private var length = 0
+
+    constructor(controlPoints: ArrayList<Vector2D>): this() {
+        this.controlPoints = controlPoints
+        this.length = controlPoints.size
+    }
+
+    fun add(point: Vector2D) {
+        controlPoints.add(point)
+        length++
+    }
+
+    fun add(i: Int, point: Vector2D) {
+        controlPoints.add(i, point)
+        length++
+    }
+
+    fun set(i: Int, point: Vector2D) {
+        controlPoints[i] = point
+    }
+
+    fun remove(i: Int) {
+        controlPoints.removeAt(i)
+        length--
+    }
+
+    fun setSegment(i: Int) {segment = i}
+
+    fun incSegment() {
+        if (segment < length-1) {segment++}
+    }
+
+    fun decSegment() {
+        if (segment > 0) {segment--}
+    }
+
+    fun getSegment(): Int {
+        return segment
+    }
+
+    fun getSegmentPoints(): ArrayList<Vector2D> {
+        val points = ArrayList<Vector2D>()
+        for (i in 0..3) {points.add(controlPoints[segment+i])}
+        return points
+    }
+
+    fun getClosest(pos: Vector2D): Double {
+        val segmentPoints = getSegmentPoints()
+
+        var t: Double
+        while (true) {
+            t = closestPoint(
+                pos,
+                segmentPoints[0],
+                segmentPoints[1],
+                segmentPoints[2],
+                segmentPoints[3]
+            )
+
+            when {
+                (t in 0.0..1.0) -> break
+                (segment == 0 || segment == length-1) -> break
+                (t < 0) -> segment--
+                (t > 1) -> segment++
+            }
+        }
+
+        return t
+    }
+
+    fun getPoint(t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints()
+        return slerp(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+    }
+
+    fun getDeriv(t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints()
+        return slerpDeriv(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+    }
+
+    fun getDeriv2(t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints()
+        return slerpDeriv2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+    }
+}
+
+/*
 class Spline(var controlPoints: ArrayList<Vector2D>) {
     private var n: Int = controlPoints.size
     private var segment: Int
@@ -95,7 +187,6 @@ class Spline(var controlPoints: ArrayList<Vector2D>) {
 
     fun numSegments (): Int = n
 
-    // TODO: Maybe change to operator?
     fun incSegment () {
         if (segment < n) {segment++}
     }
@@ -124,4 +215,4 @@ class Spline(var controlPoints: ArrayList<Vector2D>) {
         val segmentPoints = getSegment()
         return slerpDeriv2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
-}
+}*/
