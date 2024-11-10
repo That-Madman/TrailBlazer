@@ -35,6 +35,8 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
+    <exclude-output />
+    <exclude-output />
     <output url="file://$MODULE_DIR$/../../../lib/build/classes/kotlin/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../lib/src/main">

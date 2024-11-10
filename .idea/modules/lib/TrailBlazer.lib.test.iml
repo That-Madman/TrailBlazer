@@ -36,6 +36,7 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
+    <exclude-output />
     <output-test url="file://$MODULE_DIR$/../../../lib/build/classes/kotlin/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../lib/src/test">
@@ -44,7 +45,6 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../lib/src/test/kotlin" isTestSource="true" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.0.0" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="TrailBlazer.lib.main" />
 </module>
