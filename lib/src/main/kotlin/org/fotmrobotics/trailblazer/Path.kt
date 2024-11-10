@@ -37,7 +37,7 @@ fun drivePowers () {}
     }
 }*/
 
-class Event (type: Type, pt: Vector2D, d: Double) {
+class Event (type: Type, pt: Vector2D, d: Double, value: Any) {
     val grid = Vector2D(pt.x % 12, pt.y % 12)
 
     enum class Type {
@@ -46,7 +46,7 @@ class Event (type: Type, pt: Vector2D, d: Double) {
         STOP
     }
 
-    constructor(type: Event.Type, pt: Vector2D, d: Double, value: Any) : this(type, pt, d) {
-
+    constructor(type: Event.Type, pt: Vector2D, d: Double, value: Any, queue: Boolean) : this(type, pt, d, value) {
+        val queue = true
     }
 }
