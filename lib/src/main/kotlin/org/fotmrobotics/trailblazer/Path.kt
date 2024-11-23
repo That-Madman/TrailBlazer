@@ -21,15 +21,17 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
 
     val forward = splineDeriv
 
-    val curvature = curvature(splineDeriv, splineDeriv2)
-    val centripetal = forward.pow(2) * curvature
+    //val curvature = curvature(splineDeriv, splineDeriv2)
+    //val centripetal = forward.pow(2) * curvature
 
     val drive = forward + translation// + centripetal
 
     return Pose2D(drive.x, drive.y, 0.0)
 }
 
-fun drivePowers () {}
+fun drivePowers (spline: Spline, pos: Pose2D, pidf: PIDF) {
+    val drive = driveVector(spline, pos, pidf)
+}
 
 /*class PathSegment () {
     enum class Heading {
@@ -37,8 +39,9 @@ fun drivePowers () {}
     }
 }*/
 
-class Event(type: Type, pt: Vector2D, d: Double, value: Any? = null, queue: Boolean = false) {
-    val grid = Vector2D(pt.x % 12, pt.y % 12)
+class Event(type: Type, pt: Vector2D, d: Double, value: Any? = null) {
+    val grid = Vector2D(pt.x % 12, pt.y % 12) // Not needed, remove
+
 
     enum class Type {
         ACTION,
