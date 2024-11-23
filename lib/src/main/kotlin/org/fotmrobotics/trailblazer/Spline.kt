@@ -120,7 +120,17 @@ class Spline() {
     fun getClosest(pos: Vector2D): Double {
         val segmentPoints = getSegmentPoints()
 
-        var t: Double
+        //var t: Double
+
+        val t = closestPoint(
+            pos,
+            segmentPoints[0],
+            segmentPoints[1],
+            segmentPoints[2],
+            segmentPoints[3]
+        )
+
+        /*
         while (true) {
             t = closestPoint(
                 pos,
@@ -137,6 +147,7 @@ class Spline() {
                 (t > 1) -> segment++
             }
         }
+        */
 
         return t
     }
