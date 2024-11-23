@@ -8,6 +8,7 @@ LICENSE file in the root directory of this source tree.
 
 package org.fotmrobotics.trailblazer
 
+import org.apache.commons.math3.geometry.euclidean.twod.Segment
 import kotlin.math.pow
 import kotlin.math.min
 import kotlin.math.max
@@ -26,8 +27,21 @@ fun slerpDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector
     = (p1*3.0+p3-p0)*3.0*t+(p2*5.0-p1*5.0+p0-p3)*2.0
 
 // Curvature at a given point
-fun curvature (d1: Vector2D, d2: Vector2D)
-    = (d1.x * d2.y - d1.y * d2.x) / d1.norm().pow(3)
+fun curvature (spline: Spline, t: Double, distance: Double = 1e-4): Double {
+    val p0 = spline.getPoint(t - distance)
+    val p1 = spline.getPoint(t)
+    val p2 = spline.getPoint(t + distance)
+
+    return (p0.x * (p1.y - p2.y) +
+            p1.x * (p2.y - p0.y) +
+            p2.x + (p0.y - p1.y)) /
+            (
+                0.125 * Math.pow(
+                    Math.pow(p2.x - p0.x, 2.0) +
+                    Math.pow(p2.y - p0.y, 2.0)
+                    , 3.0 / 2.0)
+            )
+}
 
 fun distance (p1: Vector2D, p0: Vector2D)
     = (p1 - p0).norm().pow(2)
@@ -70,7 +84,7 @@ class Spline() {
     // TODO: If use hermite add new list for tangents. Every point must have a corresponding
     //  tangent, if not the tangent can be calculated using catmull-rom spline
     private lateinit var controlPoints: ArrayList<Vector2D>
-    private var segment = 0
+    private var currentSegment = 0
     private var length = 0
 
     constructor(controlPoints: ArrayList<Vector2D>): this() {
@@ -78,49 +92,54 @@ class Spline() {
         this.length = controlPoints.size
     }
 
-    fun add(point: Vector2D) {
+    fun addPt(point: Vector2D) {
         controlPoints.add(point)
         length++
     }
 
-    fun add(i: Int, point: Vector2D) {
+    fun addPt(i: Int, point: Vector2D) {
         controlPoints.add(i, point)
         length++
     }
 
-    fun set(i: Int, point: Vector2D) {
+    fun setPt(i: Int, point: Vector2D) {
         controlPoints[i] = point
     }
 
-    fun remove(i: Int) {
+    fun removePt(i: Int) {
         controlPoints.removeAt(i)
         length--
     }
 
-    fun setSegment(i: Int) {segment = i}
+    fun setSegment(i: Int) {this.currentSegment = i}
 
     fun incSegment() {
-        if (segment < length-1) {segment++}
+        if (this.currentSegment < length-1) {this.currentSegment++}
     }
 
     fun decSegment() {
-        if (segment > 0) {segment--}
+        if (this.currentSegment > 0) {this.currentSegment--}
     }
 
     fun getSegment(): Int {
-        return segment
+        return this.currentSegment
     }
 
     fun getSegmentPoints(): ArrayList<Vector2D> {
         val points = ArrayList<Vector2D>()
-        for (i in 0..3) {points.add(controlPoints[segment+i])}
+        for (i in 0..3) {points.add(controlPoints[this.currentSegment + i])}
         return points
     }
 
-    fun getClosest(pos: Vector2D): Double {
-        val segmentPoints = getSegmentPoints()
+    fun getSegmentPoints(segment: Int): ArrayList<Vector2D> {
+        val points = ArrayList<Vector2D>()
+        val targetSegment = max(min(segment, length - 1), 0)
+        for (i in 0..3) {points.add(controlPoints[targetSegment+i])}
+        return points
+    }
 
-        //var t: Double
+    fun getClosestPoint(pos: Vector2D): Double {
+        val segmentPoints = getSegmentPoints()
 
         val t = closestPoint(
             pos,
@@ -130,30 +149,17 @@ class Spline() {
             segmentPoints[3]
         )
 
-        /*
-        while (true) {
-            t = closestPoint(
-                pos,
-                segmentPoints[0],
-                segmentPoints[1],
-                segmentPoints[2],
-                segmentPoints[3]
-            )
-
-            when {
-                (t in 0.0..1.0) -> break
-                (segment == 0 || segment == length-1) -> break
-                (t < 0) -> segment--
-                (t > 1) -> segment++
-            }
-        }
-        */
-
         return t
     }
 
     fun getPoint(t: Double): Vector2D {
-        val segmentPoints = getSegmentPoints()
+        val i = t.toInt()
+        val segmentPoints = getSegmentPoints(this.currentSegment + i)
+        return slerp(t % 1, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+    }
+
+    fun getPoint(segment: Int, t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints(segment)
         return slerp(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
@@ -162,6 +168,12 @@ class Spline() {
         return slerpDeriv(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
+    fun getDeriv(segment: Int, t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints(segment)
+        return slerpDeriv(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+    }
+
+    // May delete if not needed since 2nd deriv is not continuous
     fun getDeriv2(t: Double): Vector2D {
         val segmentPoints = getSegmentPoints()
         return slerpDeriv2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
