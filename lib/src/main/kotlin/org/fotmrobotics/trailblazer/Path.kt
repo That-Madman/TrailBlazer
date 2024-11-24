@@ -20,7 +20,7 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
     val splineDeriv = spline.getDeriv(t)
 
     var angle = atan2(splineDeriv.y, splineDeriv.x) % (2 * Math.PI)
-    if (splineDeriv.x < 0) angle += Math.PI
+    //if (splineDeriv.x < 0) angle += Math.PI
     //var angle = atan2(splineDeriv.y, splineDeriv.x)
     //val splineDeriv2 = spline.getDeriv2(t)
 

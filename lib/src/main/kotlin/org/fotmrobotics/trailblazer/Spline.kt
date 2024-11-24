@@ -34,7 +34,7 @@ fun curvature (spline: Spline, t: Double, distance: Double = 1e-4): Double {
 
     return (p0.x * (p1.y - p2.y) +
             p1.x * (p2.y - p0.y) +
-            p2.x + (p0.y - p1.y)) /
+            p2.x * (p0.y - p1.y)) /
             (
                 0.125 * Math.pow(
                     Math.pow(p2.x - p0.x, 2.0) +
