@@ -52,7 +52,7 @@ fun distanceDeriv (p1: Vector2D, p0: Vector2D, dp1: Vector2D)
 fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
     = ((((p1 - p0) * ddp1) + (dp1 * dp1)) * 2.0).norm()
 
-fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, maxIteration: Int = 1000, tolerance: Double = 1e-6): Double {
+fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, maxIteration: Int = 2500, tolerance: Double = 1e-8): Double {
     var t = 0.5
 
     for (i in 1..maxIteration) {
