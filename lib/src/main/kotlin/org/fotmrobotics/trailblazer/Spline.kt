@@ -49,15 +49,8 @@ fun distance (p1: Vector2D, p0: Vector2D)
 fun distanceDeriv (p1: Vector2D, p0: Vector2D, dp1: Vector2D)
     = ((p1 - p0) * 2.0) dot dp1
 
-// Use this
 fun distanceDeriv2 (p1: Vector2D, p0: Vector2D, dp1: Vector2D, ddp1: Vector2D)
     = ((((p1 - p0) * ddp1) + (dp1 * dp1)) * 2.0).norm()
-
-fun distanceDeriv2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, pos: Vector2D): Double {
-    val h = 1e-4
-    return (distanceDeriv(slerp(t+h, p0, p1, p2, p3), pos, slerpDeriv(t+h, p0, p1, p2 ,p3)) -
-            distanceDeriv(slerp(t, p0, p1, p2, p3), pos, slerpDeriv(t, p0, p1, p2, p3))) / h
-}
 
 fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, maxIteration: Int = 1000, tolerance: Double = 1e-6): Double {
     var t = 0.5
@@ -179,63 +172,3 @@ class Spline() {
         return slerpDeriv2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 }
-
-/*
-class Spline(var controlPoints: ArrayList<Vector2D>) {
-    private var n: Int = controlPoints.size
-    private var segment: Int
-
-    init {
-        if (n == 0) {
-            error("Spline must be initialized with 2 or more control points.")
-        }
-
-        controlPoints.add(controlPoints.last())
-        controlPoints.add(0, controlPoints.first())
-        segment = 1
-    }
-
-    fun addPoint (i: Int, point: Vector2D) {
-        controlPoints.add(i, point)
-        n++
-    }
-
-    fun getSegment (): ArrayList<Vector2D> {
-        val points = ArrayList<Vector2D>()
-        for (i in 0..3) {points.add(controlPoints[segment-1+i])}
-        return points
-    }
-
-    fun setSegment (i: Int) {segment = i}
-
-    fun numSegments (): Int = n
-
-    fun incSegment () {
-        if (segment < n) {segment++}
-    }
-
-    fun decSegment () {
-        if (segment > 1) {segment--}
-    }
-    //
-
-    fun getClosestPoint (pos: Vector2D): Double {
-        val segmentPoints = getSegment()
-        return closestPoint(pos, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
-    }
-
-    fun getPoint (t: Double): Vector2D {
-        val segmentPoints = getSegment()
-        return slerp(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
-    }
-
-    fun getDeriv (t: Double): Vector2D {
-        val segmentPoints = getSegment()
-        return slerpDeriv(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
-    }
-
-    fun getDeriv2 (t: Double): Vector2D {
-        val segmentPoints = getSegment()
-        return slerpDeriv2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
-    }
-}*/
