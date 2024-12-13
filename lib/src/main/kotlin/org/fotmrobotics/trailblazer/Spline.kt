@@ -120,7 +120,7 @@ class Spline() {
 
     fun getSegmentPoints(): ArrayList<Vector2D> {
         val points = ArrayList<Vector2D>()
-        for (i in 0..3) {points.add(controlPoints[this.currentSegment + i - 1])}
+        for (i in 0..3) {points.add(controlPoints[this.currentSegment + i])}
         return points
     }
 
