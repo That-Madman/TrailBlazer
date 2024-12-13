@@ -108,10 +108,14 @@ class Spline() {
         return controlPoints[i]
     }
 
+    fun getLength(): Int {
+        return this.length
+    }
+
     fun setSegment(i: Int) {this.currentSegment = i}
 
     fun incSegment() {
-        if (this.currentSegment < length-1) {this.currentSegment++}
+        if (this.currentSegment < length - 2) {this.currentSegment++}
     }
 
     fun decSegment() {
