@@ -104,6 +104,10 @@ class Spline() {
         length--
     }
 
+    fun getPt(i: Int): Vector2D {
+        return controlPoints[i]
+    }
+
     fun setSegment(i: Int) {this.currentSegment = i}
 
     fun incSegment() {
