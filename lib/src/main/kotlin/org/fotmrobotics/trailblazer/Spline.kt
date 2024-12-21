@@ -93,7 +93,7 @@ class Spline() {
 
     fun getPoint(t: Double): Vector2D {
         val i = t.toInt()
-        val segmentPoints = getSegmentPoints(this.currentSegment + i)
+        val segmentPoints = getSegmentPoints(max(min(this.currentSegment + i, length - 1), 0))
         return catmullRomSpline(t % 1, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 

@@ -10,6 +10,7 @@ package org.fotmrobotics.trailblazer
 
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
 
@@ -31,7 +32,7 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
     val forward = splineDeriv
 
     val k = curvature(spline, t)
-    val centripetalMagnitude = forward.norm().pow(2.0) * k
+    val centripetalMagnitude = min(forward.norm().pow(2.0) * k, 1.0)
     val centripetal = Vector2D(
         centripetalMagnitude * cos(angle + Math.PI / 2),
         centripetalMagnitude * sin(angle + Math.PI / 2)
