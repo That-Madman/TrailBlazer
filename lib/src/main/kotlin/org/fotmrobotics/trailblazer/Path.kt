@@ -37,7 +37,7 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
         centripetalMagnitude * sin(angle + Math.PI / 2)
         )
 
-    val drive = forward + translation + centripetal
+    val drive = forward + translation //+ centripetal
 
     return Pose2D(drive.x, drive.y, angle)
 }
