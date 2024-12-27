@@ -53,7 +53,7 @@ class Spline() {
     fun setSegment(i: Int) {this.currentSegment = i}
 
     fun incSegment() {
-        if (this.currentSegment < length - 1) {this.currentSegment++}
+        if (this.currentSegment < length - 4) {this.currentSegment++}
     }
 
     fun decSegment() {
