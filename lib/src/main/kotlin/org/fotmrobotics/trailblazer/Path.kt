@@ -42,30 +42,3 @@ fun driveVector (spline: Spline, pos: Pose2D, pidf: PIDF): Pose2D {
 
     return Pose2D(drive.x, drive.y, angle)
 }
-
-/*class PathSegment () {
-    enum class Heading {
-        FOLLOW, CONSTANT, OFFSET
-    }
-}*/
-
-class Event(type: Type, pt: Vector2D, d: Double, value: Any? = null) {
-    val grid = Vector2D(pt.x % 12, pt.y % 12) // Not needed, remove
-
-
-    enum class Type {
-        ACTION,
-        HEADING,
-        STOP
-    }
-
-    enum class Heading {
-        FOLLOW,
-        CONSTANT,
-        OFFSET
-    }
-
-    //constructor(type: Event.Type, pt: Vector2D, d: Double, value: Any, queue: Boolean) : this(type, pt, d, value) {
-        //val queue = true
-    //}
-}

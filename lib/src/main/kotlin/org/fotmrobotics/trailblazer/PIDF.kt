@@ -22,17 +22,19 @@ class PIDF (private var kP: Double, private var kI: Double, private var kD: Doub
     private var prevTime = 0.0
 
     private fun getTimeDifference(): Double {
-        val dt = (System.currentTimeMillis() / 1000.0) - prevTime;
-        prevTime = System.currentTimeMillis() / 1000.0
+        val currentTime = System.nanoTime() / 1E9
+        val dt = currentTime - prevTime
+        prevTime = currentTime
         return dt
     }
 
-    private var prevError = 0.0
+    private var lastError = 0.0
 
     fun update (error: Double): Double {
         val dt = getTimeDifference()
-        prevError = error
-        return p(error) + i(error, dt) + d(error, dt) + f()
+        val output = p(error) + i(error, dt) + d(error, dt) + f()
+        lastError = error
+        return output
     }
 
     private fun p (error: Double): Double {
@@ -47,7 +49,7 @@ class PIDF (private var kP: Double, private var kI: Double, private var kD: Doub
     }
 
     private fun d (error: Double, dt: Double): Double {
-        val derivative = (error - prevError) / dt
+        val derivative = (error - lastError) / dt
         return kD * derivative
     }
 

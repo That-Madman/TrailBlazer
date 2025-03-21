@@ -12,8 +12,6 @@ import kotlin.math.min
 import kotlin.math.max
 
 class Spline() {
-    // TODO: If use hermite add new list for tangents. Every point must have a corresponding
-    //  tangent, if not the tangent can be calculated using catmull-rom spline
     private lateinit var controlPoints: ArrayList<Vector2D>
     private var currentSegment = 0
     private var length = 0
@@ -113,7 +111,6 @@ class Spline() {
         return catmullRomSplineDerivative(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
-    // May delete if not needed since 2nd deriv is not continuous
     fun getDeriv2(t: Double): Vector2D {
         val segmentPoints = getSegmentPoints()
         return catmullRomSplineDerivative2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
