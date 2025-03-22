@@ -45,13 +45,13 @@ package org.fotmrobotics.trailblazer
  * @author Alex Bryan
  */
 class PIDF @JvmOverloads constructor(
-    private val kP: Double,
-    private val kI: Double,
-    private val kD: Double,
-    private val kF: Double = 0.0,
-    private var posGet: (() -> Number)? = null,
-    private var exFun: ((Number) -> Unit)? = null,
-    private var timeGet: (() -> Number)? = { System.nanoTime() / 1e9 },
+    var kP: Double,
+    var kI: Double,
+    var kD: Double,
+    var kF: Double = 0.0,
+    var posGet: (() -> Number)? = null,
+    var exFun: ((Number) -> Unit)? = null,
+    var timeGet: (() -> Number)? = { System.nanoTime() / 1e9 },
 ) {
     /**
      * In PID, the I value is a value that gets aggregated while the formula goes on. It increases
@@ -118,18 +118,6 @@ class PIDF @JvmOverloads constructor(
      */
     fun resetI() {
         i = 0.0
-    }
-
-    fun setExecute(function: ((Number) -> Unit)) {
-        exFun = function
-    }
-
-    fun setTimer(timer: (() -> Number)) {
-        timeGet = timer
-    }
-
-    fun setPositionGetter(posGetter: (() -> Number)) {
-        posGet = posGetter
     }
 
     private fun getTime(): Number = if (timeGet != null) timeGet!!.invoke() else 0
