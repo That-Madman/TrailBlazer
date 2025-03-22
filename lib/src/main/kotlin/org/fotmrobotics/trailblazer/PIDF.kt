@@ -1,32 +1,32 @@
 /*
-BSD 3-Clause License
-
-Copyright (c) 2022, Alex Bryan
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-contributors may be used to endorse or promote products derived from
-this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * BSD 3-Clause License
+ *
+ * Copyright (c) 2022, Alex Bryan
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 package org.fotmrobotics.trailblazer
@@ -63,9 +63,13 @@ class PIDF @JvmOverloads constructor(
     private var i: Double = 0.0
     private var maxI: Double = Double.NaN
 
+    private var prevTime = 0.0
+    private var prevErr = 0.0
+
     /**
      * Calculates the output for PID based off of the [P][kP], [I][i], and [D][kD] values.
-     * If the [execute function][exFun] was set, the function also executes it.
+     * If the [execute function][exFun] was set, the function also executes it. It is not used in
+     * the quickstart, though it is still kept if the [update function][update] doesn't cut it.
      * @param target The target value
      * @param currPos The current value. If it is not set, the function will instead use the
      * [value obtaining function][posGet].
@@ -77,7 +81,9 @@ class PIDF @JvmOverloads constructor(
      */
     @JvmOverloads
     fun pidCalc(
-        target: Number, currPos: Number = getPos(), time: Number = getTime()
+        target: Number,
+        currPos: Number = if (posGet != null) posGet!!.invoke() else 0,
+        time: Number = if (timeGet != null) timeGet!!.invoke() else 0
     ): Double {
         val currErr: Double = target.toDouble() - currPos.toDouble()
         val p = kP * currErr
@@ -94,9 +100,19 @@ class PIDF @JvmOverloads constructor(
         return p + i + d + kF
     }
 
+    /**
+     * Calculates the output for PID based off of the [P][kP], [I][i], and [D][kD] values.
+     * If the [execute function][exFun] was set, the function also executes it.
+     * @param currErr The current error.
+     * @param time The current time. If it is not set, the function will instead use the
+     * [time function][timeGet].
+     * @return the calculated PID output, to be plugged into a function if the [execute function]
+     * [exFun] wasn't already set.
+     * @author Alex Bryan
+     */
     @JvmOverloads
     fun update (
-        currErr: Number, time: Number = getTime()
+        currErr: Number, time: Number = if (timeGet != null) timeGet!!.invoke() else 0
     ): Double {
         val p = kP * currErr.toDouble()
 
@@ -119,11 +135,4 @@ class PIDF @JvmOverloads constructor(
     fun resetI() {
         i = 0.0
     }
-
-    private fun getTime(): Number = if (timeGet != null) timeGet!!.invoke() else 0
-
-    private fun getPos(): Number = if (posGet != null) posGet!!.invoke() else 0
-
-    private var prevTime = 0.0
-    private var prevErr = 0.0
 }
