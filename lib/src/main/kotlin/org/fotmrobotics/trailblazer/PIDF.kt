@@ -32,14 +32,21 @@
 package org.fotmrobotics.trailblazer
 
 /**
- * A PID class by FTC Team 2173, Till the Wheels Fall Off
+ * A PID class originally written for fun, it was well proven for use during the 2024-2025 season
+ * of FTC. It uses the traditional PID controller model, with the addition of a feedforward value,
+ * which is a common addition for more complex control. For more advanced control, it allows for
+ * functions or lambdas to also be passed, allowing for a more streamlined control for later use or
+ * overriding certain aspects of the code if used in an abnormal environment
  * @param kP the P value
  * @param kI the value for the magnitude of change in the [I][i] value
  * @param kD the D value
+ * @param kF the F value
  * @param posGet the function to get the current value of what is being influenced
  * @param exFun the function executed when pidCalc is called
  * @param timeGet the function to get the time
- * @property pidCalc calculates the PID value and executes exFun if given
+ * @property update calculates the PID value and executes exFun if given
+ * @property pidCalc same as [update][update], with the addition that it calculates the error for
+ * you, allowing you to utilize the [position function][posGet].
  * @property resetI resets the [I][i] value that gets accrued as the program runs
  *
  * @author Alex Bryan
