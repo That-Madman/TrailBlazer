@@ -82,7 +82,7 @@ open class Vector2D (var x: Double, var y: Double) {
     fun angle() = angleWrap(atan2(y, x) * 180 / PI)
 
     override fun toString(): String {
-        return "{$x, $y}"
+        return "($x, $y)"
     }
 }
 
