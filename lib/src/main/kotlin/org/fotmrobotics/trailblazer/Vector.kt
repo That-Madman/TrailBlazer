@@ -80,6 +80,10 @@ open class Vector2D (var x: Double, var y: Double) {
     fun norm() = sqrt(x*x + y*y)
 
     fun angle() = angleWrap(atan2(y, x) * 180 / PI)
+
+    override fun toString(): String {
+        return "($x, $y)"
+    }
 }
 
 class Pose2D (x: Double, y: Double, var h: Double): Vector2D(x, y) {
@@ -111,5 +115,9 @@ class Pose2D (x: Double, y: Double, var h: Double): Vector2D(x, y) {
         this.x = pose2d.x
         this.y = pose2d.y
         this.h = pose2d.h
+    }
+
+    override fun toString(): String {
+        return "${super.toString()} facing $h"
     }
 }
