@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2022, Alex Bryan
+ * Copyright (c) 2023, Alex Bryan
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@
 package org.fotmrobotics.trailblazer
 
 /**
- * A PID class originally written for fun, it was well proven for use during the 2024-2025 season
+ * A PID class originally written for fun, it was well proven for use during the 2023-2024 season
  * of FTC. It uses the traditional PID controller model, with the addition of a feedforward value,
  * which is a common addition for more complex control. For more advanced control, it allows for
  * functions or lambdas to also be passed, allowing for a more streamlined control for later use or
