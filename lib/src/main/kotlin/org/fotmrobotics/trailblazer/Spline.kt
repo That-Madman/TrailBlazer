@@ -13,8 +13,8 @@ import kotlin.math.max
 
 class Spline() {
     private lateinit var controlPoints: ArrayList<Vector2D>
-    private var currentSegment = 0
-    private var length = 0
+    var segment = 0
+    var length = 0
 
     constructor(controlPoints: ArrayList<Vector2D>): this() {
         this.controlPoints = controlPoints
@@ -44,28 +44,18 @@ class Spline() {
         return controlPoints[i]
     }
 
-    fun getLength(): Int {
-        return this.length
-    }
-
-    fun setSegment(i: Int) {this.currentSegment = i}
-
     fun incSegment() {
-        if (this.currentSegment < length - 4) {this.currentSegment++}
+        if (this.segment < length - 4) this.segment++
     }
 
     fun decSegment() {
-        if (this.currentSegment > 0) {this.currentSegment--}
-    }
-
-    fun getSegment(): Int {
-        return this.currentSegment
+        if (this.segment > 0) this.segment--
     }
 
     fun getSegmentPoints(): ArrayList<Vector2D> {
         val points = ArrayList<Vector2D>()
-        val segment = max(min(this.currentSegment, length - 4), 0)
-        for (i in 0..3) {points.add(controlPoints[segment + i])}
+        val seg = max(min(this.segment, length - 4), 0)
+        for (i in 0..3) points.add(controlPoints[seg + i])
         return points
     }
 
@@ -92,12 +82,12 @@ class Spline() {
 
     fun getPoint(t: Double): Vector2D {
         val i = t.toInt()
-        val segmentPoints = getSegmentPoints(this.currentSegment + i)
+        val segmentPoints = getSegmentPoints(this.segment + i)
         return catmullRomSpline(t % 1, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
-    fun getPoint(segment: Int, t: Double): Vector2D {
-        val segmentPoints = getSegmentPoints(segment)
+    fun getPoint(seg: Int, t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints(seg)
         return catmullRomSpline(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
@@ -106,8 +96,8 @@ class Spline() {
         return catmullRomSplineDerivative(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 
-    fun getDeriv(segment: Int, t: Double): Vector2D {
-        val segmentPoints = getSegmentPoints(segment)
+    fun getDeriv(seg: Int, t: Double): Vector2D {
+        val segmentPoints = getSegmentPoints(seg)
         return catmullRomSplineDerivative(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
     }
 

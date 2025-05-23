@@ -58,7 +58,7 @@ class PIDF @JvmOverloads constructor(
     var kF: Double = 0.0,
     var posGet: (() -> Number)? = null,
     var exFun: ((Number) -> Unit)? = null,
-    var timeGet: (() -> Number)? = { System.nanoTime() / 1e9 },
+    var timeGet: (() -> Number) = System::nanoTime,
 ) {
     /**
      * In PID, the I value is a value that gets aggregated while the formula goes on. It increases
@@ -90,7 +90,7 @@ class PIDF @JvmOverloads constructor(
     fun pidCalc(
         target: Number,
         currPos: Number = if (posGet != null) posGet!!.invoke() else 0,
-        time: Number = if (timeGet != null) timeGet!!.invoke() else 0
+        time: Number = timeGet.invoke()
     ): Double {
         val currErr: Double = target.toDouble() - currPos.toDouble()
         val p = kP * currErr
@@ -119,7 +119,8 @@ class PIDF @JvmOverloads constructor(
      */
     @JvmOverloads
     fun update (
-        currErr: Number, time: Number = if (timeGet != null) timeGet!!.invoke() else 0
+        currErr: Number,
+        time: Number = timeGet.invoke()
     ): Double {
         val p = kP * currErr.toDouble()
 
