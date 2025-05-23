@@ -68,7 +68,12 @@ class PIDF @JvmOverloads constructor(
      * you want to reset it back to 0, use the [resetI] function
      */
     private var i: Double = 0.0
-    private var maxI: Double = Double.NaN
+    /**
+     * The maximum absolute value that I can reach. If [I][i] becomes greater than maxI, or less
+     * than -maxI, it gets clamped into that value. By default, it is [NaN][Double.NaN], which
+     * is interpreted by the class as having no maximum nor minimum value of [I][i].
+     */
+    var maxI: Double = Double.NaN
 
     private var prevTime = 0.0
     private var prevErr = 0.0
