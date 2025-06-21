@@ -9,34 +9,32 @@
 package org.fotmrobotics.trailblazer
 
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.pow
 
 fun angleWrap (angle: Double) =
-    if (angle >= 0) {angle % 360}
-    else {angle % 360 + 360}
+    if (angle >= 0) angle % 360
+    else angle % 360 + 360
 
 // Catmull-rom spline interpolation
 fun catmullRomSpline (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D)
     = (
-        (p1*2.0) +
-        (-p0 + p2) * t +
-        (p0*2.0 - p1*5.0 + p2*4.0 - p3) * t*t +
-        (-p0 + p1*3.0 - p2*3.0 + p3) * t*t*t
+        (p1 * 2.0) +
+        (p2 -p0) * t +
+        (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3) * t * t +
+        (p1 * 3.0 - p2 * 3.0 + p3 - p0) * t * t * t
     ) * 0.5
 
 // Derivative of catmull-rom spline interpolation
 fun catmullRomSplineDerivative (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D)
     = (
-        (p1*3.0 + p3 - p0 - p2*3.0) * 3.0*t*t +
-        (p0*2.0 + p2*4.0 - p1*5.0 - p3) * 2.0*t +
-        (-p0 + p2)
+        (p1 * 3.0 + p3 - p0 - p2 * 3.0) * 3.0 * t * t +
+        (p0 * 2.0 + p2 * 4.0 - p1 * 5.0 - p3) * 2.0 * t +
+        (p2 - p0)
     ) * 0.5
 
 // 2nd derivative of catmull-rom spline interpolation
 fun catmullRomSplineDerivative2 (t: Double, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D)
-    = (p1*3.0 + p3 - p0)*3.0*t + (p2*5.0 - p1*5.0 + p0 - p3)*2.0
+    = (p1 * 3.0 + p3 - p0) * 3.0 * t + (p2 * 5.0 - p1 * 5.0 + p0 - p3) * 2.0
 
 // Curvature at a given point
 fun curvature (spline: Spline, t: Double, distance: Double = 1e-4): Double {
@@ -47,12 +45,7 @@ fun curvature (spline: Spline, t: Double, distance: Double = 1e-4): Double {
     return (p0.x * (p1.y - p2.y) +
             p1.x * (p2.y - p0.y) +
             p2.x * (p0.y - p1.y)) /
-            (
-                    0.125 * Math.pow(
-                        Math.pow(p2.x - p0.x, 2.0) +
-                                Math.pow(p2.y - p0.y, 2.0)
-                        , 3.0 / 2.0)
-                    )
+            (0.125 * ((p2.x - p0.x).pow(2.0) + (p2.y - p0.y).pow(2.0)).pow(1.5))
 }
 
 fun distance (p1: Vector2D, p0: Vector2D)
@@ -76,7 +69,7 @@ fun closestPoint (pos: Vector2D, p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: V
         val ddf = distanceDerivative2(splinePoint, pos, splineDeriv, splineDeriv2)
 
         t -= df / ddf
-        t = min(max(t, 0.0), 1.0)
+        t.coerceIn(0.0..1.0)
 
         if (splinePoint == pos) {break}
         if (abs(df) < tolerance) {break}

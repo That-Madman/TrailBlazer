@@ -77,7 +77,7 @@ open class Vector2D (var x: Double, var y: Double) {
 
     fun sum() = x + y
 
-    fun norm() = sqrt(x*x + y*y)
+    fun norm() = sqrt(x * x + y * y)
 
     fun angle() = angleWrap(atan2(y, x) * 180 / PI)
 

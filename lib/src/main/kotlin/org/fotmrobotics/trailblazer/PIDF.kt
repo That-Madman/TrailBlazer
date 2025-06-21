@@ -58,7 +58,7 @@ class PIDF @JvmOverloads constructor(
     var kF: Double = 0.0,
     var posGet: (() -> Number)? = null,
     var exFun: ((Number) -> Unit)? = null,
-    var timeGet: (() -> Number)? = { System.nanoTime() / 1e9 },
+    var timeGet: (() -> Number) = System::nanoTime,
 ) {
     /**
      * In PID, the I value is a value that gets aggregated while the formula goes on. It increases
@@ -68,7 +68,12 @@ class PIDF @JvmOverloads constructor(
      * you want to reset it back to 0, use the [resetI] function
      */
     private var i: Double = 0.0
-    private var maxI: Double = Double.NaN
+    /**
+     * The maximum absolute value that I can reach. If [I][i] becomes greater than maxI, or less
+     * than -maxI, it gets clamped into that value. By default, it is [NaN][Double.NaN], which
+     * is interpreted by the class as having no maximum nor minimum value of [I][i].
+     */
+    var maxI: Double = Double.NaN
 
     private var prevTime = 0.0
     private var prevErr = 0.0
@@ -90,7 +95,7 @@ class PIDF @JvmOverloads constructor(
     fun pidCalc(
         target: Number,
         currPos: Number = if (posGet != null) posGet!!.invoke() else 0,
-        time: Number = if (timeGet != null) timeGet!!.invoke() else 0
+        time: Number = timeGet.invoke()
     ): Double {
         val currErr: Double = target.toDouble() - currPos.toDouble()
         val p = kP * currErr
@@ -119,7 +124,8 @@ class PIDF @JvmOverloads constructor(
      */
     @JvmOverloads
     fun update (
-        currErr: Number, time: Number = if (timeGet != null) timeGet!!.invoke() else 0
+        currErr: Number,
+        time: Number = timeGet.invoke()
     ): Double {
         val p = kP * currErr.toDouble()
 
