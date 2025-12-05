@@ -13,7 +13,7 @@ import kotlin.math.atan2
 import kotlin.math.PI
 import kotlin.math.pow
 
-open class Vector2D (var x: Double, var y: Double) {
+open class Vector2D (var x: Double, var y: Double) : Cloneable {
     operator fun plus (v: Vector2D) = Vector2D(x + v.x, y + v.y)
 
     operator fun inc() = Vector2D(x + 1, y + 1)
@@ -86,7 +86,7 @@ open class Vector2D (var x: Double, var y: Double) {
     }
 }
 
-class Pose2D (x: Double, y: Double, var h: Double): Vector2D(x, y) {
+class Pose2D (x: Double, y: Double, var h: Double): Vector2D(x, y), Cloneable {
     override operator fun get (i: Int): Double {
         return when (i) {
             0 -> x
