@@ -84,9 +84,13 @@ open class Vector2D (var x: Double, var y: Double) : Cloneable {
     override fun toString(): String {
         return "($x, $y)"
     }
+
+    public override fun clone(): Any {
+        return super.clone()
+    }
 }
 
-class Pose2D (x: Double, y: Double, var h: Double): Vector2D(x, y), Cloneable {
+class Pose2D (x: Double, y: Double, var h: Double): Vector2D(x, y) {
     override operator fun get (i: Int): Double {
         return when (i) {
             0 -> x
